@@ -1,0 +1,671 @@
+/*
+ * MyBharat Chat Widget — scoped styles
+ *
+ * All selectors live under .mbc-root so they cannot leak into host apps.
+ * CSS custom properties are declared on .mbc-root for theming; dark mode
+ * is applied via [data-theme="dark"].  Consumers override any token via
+ * the `primaryColor` prop (mapped to --mbc-primary) or by passing a
+ * `theme` object through the component's style attribute.
+ *
+ * BEM-inspired class naming prefix: mbc- (MyBharat Chat)
+ */
+
+/* ══════════════════════════════════════════════════════════════
+   1. Design tokens — Light theme (default)
+   ══════════════════════════════════════════════════════════════ */
+.mbc-root {
+  /* Surfaces */
+  --mbc-bg-main:      #d9dde2;
+  --mbc-sidebar-bg:   #d3dbe3;
+  --mbc-sidebar-soft: #ecf1f5;
+  --mbc-panel-bg:     #eceff2;
+  /* Borders */
+  --mbc-line:         #b6c2ce;
+  --mbc-line-soft:    #cfd6dd;
+  /* Text */
+  --mbc-text-main:    #1f2a33;
+  --mbc-text-soft:    #5f6b74;
+  --mbc-text-dark:    #18232c;
+  /* Bubbles */
+  --mbc-bubble-me:    #f5dfde;
+  --mbc-bubble-them:  #e4f3ef;
+  /* Brand */
+  --mbc-primary:      #138a64;
+  --mbc-teal:         #1f9ea1;
+  --mbc-danger:       #e84a3f;
+
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  box-sizing: border-box;
+  color: var(--mbc-text-main);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   2. Design tokens — Dark theme
+   ══════════════════════════════════════════════════════════════ */
+.mbc-root[data-theme="dark"] {
+  --mbc-bg-main:      #1a1f24;
+  --mbc-sidebar-bg:   #1e2530;
+  --mbc-sidebar-soft: #242c38;
+  --mbc-panel-bg:     #22282f;
+  --mbc-line:         #3a434e;
+  --mbc-line-soft:    #2e3640;
+  --mbc-text-main:    #d8e0e8;
+  --mbc-text-soft:    #8899a6;
+  --mbc-text-dark:    #ecf1f5;
+  --mbc-bubble-me:    #3a2a34;
+  --mbc-bubble-them:  #1e3330;
+  --mbc-primary:      #2bbb8e;
+  --mbc-teal:         #26adb0;
+  --mbc-danger:       #f05750;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   3. Global reset (scoped)
+   ══════════════════════════════════════════════════════════════ */
+.mbc-root *,
+.mbc-root *::before,
+.mbc-root *::after {
+  box-sizing: border-box;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   4. Shell — Embedded mode
+   ══════════════════════════════════════════════════════════════ */
+.mbc-root {
+  width: min(1440px, 100%);
+  height: 100%;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 8px;
+  padding: 8px;
+  background: var(--mbc-bg-main);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5. Floating mode
+   ══════════════════════════════════════════════════════════════ */
+.mbc-root--floating {
+  /* Override the grid layout for the floating wrapper */
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.mbc-floating-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--mbc-teal);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.mbc-floating-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+}
+
+.mbc-floating-panel {
+  position: absolute;
+  bottom: 68px;
+  right: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  background: var(--mbc-panel-bg);
+  border: 1px solid var(--mbc-line);
+  animation: mbc-panel-open 0.18s ease-out;
+}
+
+.mbc-root--floating[style*="left"] .mbc-floating-panel {
+  right: auto;
+  left: 0;
+}
+
+.mbc-root--floating[data-theme] .mbc-floating-panel[style*="top"] {
+  bottom: auto;
+  top: 68px;
+}
+
+@keyframes mbc-panel-open {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.mbc-floating-panel-inner {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  background: var(--mbc-bg-main);
+}
+
+.mbc-floating-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(0, 0, 0, 0.18);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.mbc-floating-close:hover { background: rgba(0, 0, 0, 0.32); }
+
+/* ══════════════════════════════════════════════════════════════
+   6. Sidebar
+   ══════════════════════════════════════════════════════════════ */
+.mbc-sidebar {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  background: var(--mbc-sidebar-bg);
+  border: 1px solid var(--mbc-line);
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.mbc-sidebar-header {
+  padding: 10px;
+  background: var(--mbc-sidebar-soft);
+  border-bottom: 1px solid var(--mbc-line);
+}
+
+.mbc-sidebar-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.mbc-tab-btn {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 10px 8px;
+  background: transparent;
+  color: var(--mbc-text-soft);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mbc-tab-btn--active {
+  background: rgba(31, 158, 161, 0.16);
+  color: var(--mbc-teal);
+  border-color: rgba(31, 158, 161, 0.3);
+}
+
+.mbc-root[data-theme="dark"] .mbc-tab-btn--active {
+  background: rgba(38, 173, 176, 0.2);
+  color: var(--mbc-teal);
+  border-color: rgba(38, 173, 176, 0.35);
+}
+
+.mbc-sidebar-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--mbc-line);
+  background: var(--mbc-sidebar-bg);
+}
+
+.mbc-sidebar-status-row h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--mbc-text-dark);
+}
+
+.mbc-connection-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 4px 9px;
+}
+
+.mbc-connection-pill--online {
+  background: rgba(19, 138, 100, 0.16);
+  color: var(--mbc-primary);
+}
+
+.mbc-connection-pill--offline {
+  background: rgba(232, 74, 63, 0.14);
+  color: var(--mbc-danger);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   7. User list
+   ══════════════════════════════════════════════════════════════ */
+.mbc-user-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.mbc-user-row {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--mbc-line);
+  background: transparent;
+  color: var(--mbc-text-main);
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.mbc-user-row:hover,
+.mbc-user-row--active {
+  background: rgba(0, 0, 0, 0.07);
+}
+
+.mbc-root[data-theme="dark"] .mbc-user-row:hover,
+.mbc-root[data-theme="dark"] .mbc-user-row--active {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.mbc-user-meta { display: grid; gap: 2px; }
+
+.mbc-user-meta strong {
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: var(--mbc-text-dark);
+}
+
+.mbc-user-count {
+  min-width: 22px;
+  text-align: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--mbc-teal);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   8. Avatar
+   ══════════════════════════════════════════════════════════════ */
+.mbc-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(31, 42, 51, 0.18);
+  flex-shrink: 0;
+}
+
+.mbc-root[data-theme="dark"] .mbc-avatar {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.mbc-avatar--large { width: 38px; height: 38px; }
+
+.mbc-avatar-initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   9. Chat window
+   ══════════════════════════════════════════════════════════════ */
+.mbc-chat-window {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100%;
+  border: 1px solid var(--mbc-line);
+  background: var(--mbc-panel-bg);
+  overflow: hidden;
+}
+
+.mbc-chat-window--placeholder {
+  place-items: center;
+  text-align: center;
+  color: var(--mbc-text-soft);
+  padding: 24px;
+}
+
+.mbc-chat-window--placeholder h3 {
+  margin: 0;
+  color: var(--mbc-text-dark);
+}
+
+.mbc-chat-window--placeholder p { margin-top: 8px; }
+
+/* ══════════════════════════════════════════════════════════════
+   10. Chat header
+   ══════════════════════════════════════════════════════════════ */
+.mbc-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--mbc-line-soft);
+  background: var(--mbc-sidebar-soft);
+  flex-shrink: 0;
+}
+
+.mbc-chat-user-info h3 {
+  margin: 0;
+  color: var(--mbc-text-dark);
+  font-size: 1.01rem;
+  font-weight: 700;
+}
+
+.mbc-chat-user-info p {
+  margin: 2px 0 0;
+  color: var(--mbc-text-soft);
+  font-size: 0.82rem;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   11. Message list
+   ══════════════════════════════════════════════════════════════ */
+.mbc-message-history {
+  list-style: none;
+  margin: 0;
+  padding: 10px 16px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scroll-behavior: auto;
+}
+
+/* Skeleton loader */
+.mbc-message-history-skeleton {
+  padding: 20px 24px;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mbc-skeleton-line {
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    var(--mbc-line) 25%,
+    var(--mbc-sidebar-soft) 50%,
+    var(--mbc-line) 75%
+  );
+  background-size: 220% 100%;
+  animation: mbc-shimmer 1.2s ease-in-out infinite;
+}
+
+.mbc-skeleton-line--mine { margin-left: auto; }
+.mbc-skeleton-line--w30  { width: 30%; }
+.mbc-skeleton-line--w38  { width: 38%; }
+.mbc-skeleton-line--w40  { width: 40%; }
+.mbc-skeleton-line--w52  { width: 52%; }
+.mbc-skeleton-line--w55  { width: 55%; }
+.mbc-skeleton-line--w65  { width: 65%; }
+
+@keyframes mbc-shimmer {
+  0%   { background-position: 220% 0; }
+  100% { background-position: -220% 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   12. Message bubbles
+   ══════════════════════════════════════════════════════════════ */
+.mbc-bubble-row {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  gap: 8px;
+}
+
+.mbc-bubble-row--mine   { justify-content: flex-end; }
+.mbc-bubble-row--theirs { justify-content: flex-start; }
+
+.mbc-bubble-avatar {
+  width: 32px;
+  height: 32px;
+  margin-top: 20px;
+  flex-shrink: 0;
+}
+
+.mbc-bubble-avatar--mine { order: 2; }
+
+.mbc-bubble-stack {
+  display: grid;
+  gap: 4px;
+  max-width: min(74%, 640px);
+}
+
+.mbc-bubble-row--mine .mbc-bubble-stack { justify-items: end; }
+
+.mbc-bubble-sender {
+  font-size: 0.94rem;
+  color: var(--mbc-text-dark);
+  font-weight: 600;
+}
+
+.mbc-bubble {
+  display: inline-block;
+  width: fit-content;
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(122, 136, 147, 0.14);
+}
+
+.mbc-bubble--mine   { background: var(--mbc-bubble-me); }
+.mbc-bubble--theirs { background: var(--mbc-bubble-them); }
+
+.mbc-bubble p {
+  margin: 0;
+  color: var(--mbc-text-main);
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 1.03rem;
+  line-height: 1.28;
+}
+
+.mbc-bubble-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 0.68rem;
+  color: var(--mbc-text-soft);
+  margin: 0 2px;
+}
+
+.mbc-bubble-meta--mine { justify-content: flex-end; }
+
+/* ══════════════════════════════════════════════════════════════
+   13. Load more / date separators / new messages button
+   ══════════════════════════════════════════════════════════════ */
+.mbc-load-more-row {
+  display: flex;
+  justify-content: center;
+  min-height: 24px;
+  padding: 4px 0 6px;
+}
+
+.mbc-load-more-btn {
+  background: rgba(31, 158, 161, 0.12);
+  color: var(--mbc-teal);
+  border: 1px solid rgba(31, 158, 161, 0.25);
+  border-radius: 999px;
+  padding: 5px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mbc-load-more-btn:hover { background: rgba(31, 158, 161, 0.22); }
+
+.mbc-load-more-spinner {
+  font-size: 0.78rem;
+  color: var(--mbc-text-soft);
+}
+
+.mbc-date-separator-row {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 8px;
+}
+
+.mbc-date-separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--mbc-text-soft);
+  background: var(--mbc-sidebar-soft);
+  border: 1px solid var(--mbc-line);
+}
+
+.mbc-new-messages-row {
+  position: sticky;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+  margin-top: 10px;
+}
+
+.mbc-new-messages-btn {
+  pointer-events: auto;
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(120deg, var(--mbc-teal), var(--mbc-primary));
+  box-shadow: 0 6px 16px rgba(17, 27, 33, 0.2);
+  cursor: pointer;
+}
+
+.mbc-new-messages-btn:hover { filter: brightness(1.06); }
+
+/* ══════════════════════════════════════════════════════════════
+   14. Message input
+   ══════════════════════════════════════════════════════════════ */
+.mbc-message-input-wrap {
+  border-top: 1px solid var(--mbc-line-soft);
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  background: var(--mbc-sidebar-soft);
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.mbc-composer-shell {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  background: var(--mbc-panel-bg);
+  border: 1px solid var(--mbc-line);
+  border-radius: 12px;
+  padding: 10px 10px 10px 14px;
+  min-height: 54px;
+}
+
+.mbc-message-input-wrap input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--mbc-text-main);
+}
+
+.mbc-message-input-wrap input::placeholder { color: var(--mbc-text-soft); }
+
+.mbc-composer-plus,
+.mbc-composer-send {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mbc-composer-plus {
+  background: var(--mbc-panel-bg);
+  border: 1px solid var(--mbc-line);
+  color: var(--mbc-text-main);
+}
+
+.mbc-composer-send {
+  background: var(--mbc-teal);
+  color: #fff;
+}
+
+.mbc-composer-plus:disabled,
+.mbc-composer-send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   15. Responsive
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 980px) {
+  .mbc-root:not(.mbc-root--floating) {
+    grid-template-columns: 290px 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .mbc-root:not(.mbc-root--floating) {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .mbc-root:not(.mbc-root--floating) .mbc-sidebar {
+    min-height: 220px;
+    max-height: 38vh;
+  }
+
+  .mbc-root:not(.mbc-root--floating) .mbc-chat-window {
+    min-height: 55vh;
+  }
+
+  .mbc-bubble { max-width: 92%; }
+}

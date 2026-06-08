@@ -1,0 +1,1 @@
+{"version":3,"file":"ChatHeader.d.ts","sourceRoot":"","sources":["../../src/components/ChatHeader.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,UAAU,CAAC;AAGrC,KAAK,eAAe,GAAG;IACrB,IAAI,EAAE,IAAI,CAAC;CACZ,CAAC;AAEF,MAAM,CAAC,OAAO,UAAU,UAAU,CAAC,EAAE,IAAI,EAAE,EAAE,eAAe,+BAU3D"}
