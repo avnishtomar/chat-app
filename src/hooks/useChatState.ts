@@ -9,6 +9,7 @@ const PAGE_LIMIT = 20;
 export interface UseChatStateOptions {
   apiClient: ApiClient;
   socket: Socket;
+  domain_id: number;
   onMessageSent?: (message: string) => void;
   onError?: (error: Error) => void;
 }
@@ -34,6 +35,7 @@ export interface ChatState {
 export function useChatState({
   apiClient,
   socket,
+  domain_id,
   onMessageSent,
   onError,
 }: UseChatStateOptions): ChatState {
@@ -228,10 +230,14 @@ export function useChatState({
       [activeUserId]: [...(prev[activeUserId] ?? []), optimistic],
     }));
 
-    socket.emit('send_message', { receiverId: activeUserId, content: text });
+    socket.emit('send_message', {
+      receiverId: activeUserId,
+      content: text,
+      domain_id: Number.isInteger(domain_id) ? domain_id : 0,
+    });
     setDraft('');
     onMessageSent?.(text);
-  }, [activeUserId, draft, onMessageSent, socket]);
+  }, [activeUserId, domain_id, draft, onMessageSent, socket]);
 
   const loadMoreMessages = useCallback(() => {
     if (!activeUserId) return;

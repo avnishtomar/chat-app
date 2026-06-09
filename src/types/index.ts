@@ -48,6 +48,8 @@ export interface MyBharatChatApplicationProps {
   token?: string;
   /** Authenticated user's ID (reserved for future per-user features) */
   userId?: string;
+  /** Domain identifier forwarded as `domain_id` in chat events */
+  domain_id: number;
   /** Optional tenant identifier forwarded in future multi-tenant scenarios */
   tenantId?: string;
   /**

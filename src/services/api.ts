@@ -118,12 +118,15 @@ function extractNextCursor(payload: unknown): string | null {
  * Safe to call inside `useMemo` — a new client is only created when the
  * arguments change.
  */
-export function createApiClient(apiBaseUrl: string, token: string) {
+export function createApiClient(apiBaseUrl: string, token: string, domain_id: number) {
+  const normalizedDomainId = Number.isInteger(domain_id) ? String(domain_id) : undefined;
+
   async function requestJson(path: string): Promise<unknown> {
     const response = await fetch(`${apiBaseUrl}${path}`, {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,
+        ...(normalizedDomainId ? { 'x-domain-id': normalizedDomainId } : {}),
       },
     });
     if (!response.ok) {

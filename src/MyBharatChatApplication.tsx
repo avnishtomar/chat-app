@@ -21,6 +21,7 @@ import type { MyBharatChatApplicationProps } from './types';
 interface ChatPanelProps {
   apiBaseUrl: string;
   token: string;
+  domain_id: number;
   title?: string;
   welcomeMessage?: string;
   onMessageSent?: (message: string) => void;
@@ -30,20 +31,21 @@ interface ChatPanelProps {
 function ChatPanel({
   apiBaseUrl,
   token,
+  domain_id,
   title,
   welcomeMessage,
   onMessageSent,
   onError,
 }: ChatPanelProps) {
   const socket = useMemo(
-    () => createChatSocket(apiBaseUrl, token),
+    () => createChatSocket(apiBaseUrl, token, domain_id),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [apiBaseUrl, token],
+    [apiBaseUrl, domain_id, token],
   );
 
   const apiClient = useMemo(
-    () => createApiClient(apiBaseUrl, token),
-    [apiBaseUrl, token],
+    () => createApiClient(apiBaseUrl, token, domain_id),
+    [apiBaseUrl, domain_id, token],
   );
 
   const {
@@ -61,7 +63,7 @@ function ChatPanel({
     setDraft,
     sendMessage,
     loadMoreMessages,
-  } = useChatState({ apiClient, socket, onMessageSent, onError });
+  } = useChatState({ apiClient, socket, domain_id, onMessageSent, onError });
 
   return (
     <>
@@ -112,6 +114,7 @@ function CloseIcon() {
 export function MyBharatChatApplication({
   apiBaseUrl,
   token = '',
+  domain_id,
   title,
   welcomeMessage,
   theme = 'light',
@@ -176,6 +179,7 @@ export function MyBharatChatApplication({
               <ChatPanel
                 apiBaseUrl={apiBaseUrl}
                 token={token}
+                domain_id={domain_id}
                 title={title}
                 welcomeMessage={welcomeMessage}
                 onMessageSent={onMessageSent}
@@ -207,6 +211,7 @@ export function MyBharatChatApplication({
       <ChatPanel
         apiBaseUrl={apiBaseUrl}
         token={token}
+        domain_id={domain_id}
         title={title}
         welcomeMessage={welcomeMessage}
         onMessageSent={onMessageSent}
